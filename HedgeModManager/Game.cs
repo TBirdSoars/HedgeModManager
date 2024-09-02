@@ -101,7 +101,8 @@ namespace HedgeModManager
         public static Game SonicColorsUltimate = new Game()
         {
             GameName = "SonicColorsUltimate",
-            ExecutableName = "Sonic Colors - Ultimate.exe",
+            ExecutableName = "SonicColorsUltimate.exe",
+            ExecutableNameEGS = "Sonic Colors - Ultimate.exe",
             SupportsCPKREDIR = false,
             SupportsSaveRedirection = false,
             Folders = new[] { "PCCriPak" },
@@ -195,6 +196,7 @@ namespace HedgeModManager
     {
         public string GameName = "NoGame";
         public string ExecutableName = string.Empty;
+        public string ExecutableNameEGS = string.Empty;
         public string SaveName = string.Empty;
         public ModLoader ModLoader = null;
         public bool SupportsCPKREDIR = false;
