@@ -101,18 +101,31 @@ namespace HedgeModManager
         public static Game SonicColorsUltimate = new Game()
         {
             GameName = "SonicColorsUltimate",
-            ExecutableName = "Sonic Colors - Ultimate.exe",
+            ExecutableName = "SonicColorsUltimate.exe",
             SupportsCPKREDIR = false,
             SupportsSaveRedirection = false,
             Folders = new[] { "PCCriPak" },
             AppID = "2055290",
-            EGSID = "e5071e19d08c45a6bdda5d92fbd0a03e",
             GBProtocol = "hedgemmrainbow",
             Is64Bit = true,
             ModLoader = ModLoaders.RainbowModLoader,
             CodesURL = Resources.URL_RAINBOW_CODES,
             GamePath = Path.Combine("SonicColorsUltimate", "exec", "SonicColorsUltimate.exe"),
-            GamePathEGS = Path.Combine("SonicColorsUltimate", "rainbow Shipping", "Sonic Colors - Ultimate.exe")
+        };
+
+        public static Game SonicColorsUltimateEGS = new Game()
+        {
+            GameName = "SonicColorsUltimate",
+            ExecutableName = "Sonic Colors - Ultimate.exe",
+            SupportsCPKREDIR = false,
+            SupportsSaveRedirection = false,
+            Folders = new[] { "PCCriPak" },
+            EGSID = "e5071e19d08c45a6bdda5d92fbd0a03e",
+            GBProtocol = "hedgemmrainbow",
+            Is64Bit = true,
+            ModLoader = ModLoaders.RainbowModLoader,
+            CodesURL = Resources.URL_RAINBOW_CODES,
+            GamePath = Path.Combine("SonicColorsUltimate", "rainbow Shipping", "Sonic Colors - Ultimate.exe")
         };
 
         public static Game SonicOrigins = new Game()
@@ -157,6 +170,7 @@ namespace HedgeModManager
             yield return PuyoPuyoTetris2;
             yield return Tokyo2020;
             yield return SonicColorsUltimate;
+            yield return SonicColorsUltimateEGS;
             yield return SonicOrigins;
             yield return SonicFrontiers;
         }
@@ -314,9 +328,9 @@ namespace HedgeModManager
             }
 
             // Check for dupes
-            foreach (var game in games.GroupBy(t => t.BaseGame).Where(t => t.Count() > 1).Select(t => t.Key))
+            foreach (string game in games.GroupBy(t => t.BaseGame.GameName).Where(t => t.Count() > 1).Select(t => t.Key))
             {
-                foreach (var install in games.Where(t => t.BaseGame == game))
+                foreach (var install in games.Where(t => t.BaseGame.GameName == game))
                 {
                     install.ShowLauncher = true;
                 }
