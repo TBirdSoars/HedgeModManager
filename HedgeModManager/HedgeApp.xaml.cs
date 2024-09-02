@@ -47,6 +47,7 @@ using static HedgeModManager.Lang;
 using Microsoft.Win32;
 using HedgeModManager.CLI;
 using HedgeModManager.CodeCompiler;
+using HedgeModManager.Foundation;
 
 namespace HedgeModManager
 {
@@ -235,7 +236,19 @@ namespace HedgeModManager
             {
                 if (CurrentGame.SupportsCPKREDIR)
                 {
-                    string exePath = Path.Combine(StartDirectory, CurrentGame.ExecutableName);
+                    string exePath = string.Empty;
+                    bool existsGameExe = File.Exists(Path.Combine(StartDirectory, Path.GetFileName(CurrentGame.GamePath)));
+                    bool existsGameExeEGS = File.Exists(Path.Combine(StartDirectory, Path.GetFileName(CurrentGame.GamePathEGS)));
+
+                    if (existsGameExe)
+                    {
+                        exePath = Path.Combine(StartDirectory, Path.GetFileName(CurrentGame.GamePath));
+                    }
+                    if (existsGameExeEGS)
+                    {
+                        exePath = Path.Combine(StartDirectory, Path.GetFileName(CurrentGame.GamePathEGS));
+                    }
+
                     if (IsCPKREDIRInstalled(exePath))
                         InstallCPKREDIR(exePath, false);
 
@@ -316,16 +329,19 @@ namespace HedgeModManager
         {
             foreach (var game in Games.GetSupportedGames())
             {
-                if (File.Exists(Path.Combine(StartDirectory, game.ExecutableName)))
+                bool existsGameExe = File.Exists(Path.Combine(StartDirectory, Path.GetFileName(game.GamePath)));
+                bool existsGameExeEGS = File.Exists(Path.Combine(StartDirectory, Path.GetFileName(game.GamePathEGS)));
+
+                if (existsGameExe || existsGameExeEGS)
                 {
-                    var steamGame = GameInstalls.FirstOrDefault(x => x.BaseGame == game);
-                    if (steamGame == null)
+                    var localGame = GameInstalls.FirstOrDefault(x => x.BaseGame == game);
+                    if (localGame == null)
                     {
-                        steamGame = new GameInstall(game, StartDirectory, GameLauncher.None);
-                        GameInstalls.Add(steamGame);
+                        localGame = new GameInstall(game, StartDirectory, GameLauncher.None);
+                        GameInstalls.Add(localGame);
                     }
                     CurrentGame = game;
-                    CurrentGameInstall = steamGame;
+                    CurrentGameInstall = localGame;
                     try
                     {
                         RegistryConfig.LastGameDirectory = StartDirectory;
@@ -341,7 +357,7 @@ namespace HedgeModManager
                         Current.MainWindow.ShowDialog();
                         Environment.Exit(-1);
                     }
-                    return steamGame;
+                    return localGame;
                 }
             }
             return null;

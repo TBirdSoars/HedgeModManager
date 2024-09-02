@@ -253,7 +253,20 @@ namespace HedgeModManager
                         HedgeApp.StartURL($"heroic://launch/{BaseGame.EGSID}", true);
                         break;
                     default:
-                        Process.Start(new ProcessStartInfo(Path.Combine(startDirectory, BaseGame.ExecutableName))
+                        string exePath = string.Empty;
+                        bool existsGameExe = File.Exists(Path.Combine(startDirectory, Path.GetFileName(BaseGame.GamePath)));
+                        bool existsGameExeEGS = File.Exists(Path.Combine(startDirectory, Path.GetFileName(BaseGame.GamePathEGS)));
+
+                        if (existsGameExe)
+                        {
+                            exePath = Path.Combine(startDirectory, Path.GetFileName(BaseGame.GamePath));
+                        }
+                        if (existsGameExeEGS)
+                        {
+                            exePath = Path.Combine(startDirectory, Path.GetFileName(BaseGame.GamePathEGS));
+                        }
+
+                        Process.Start(new ProcessStartInfo(exePath)
                         {
                             WorkingDirectory = startDirectory
                         });
@@ -305,7 +318,19 @@ namespace HedgeModManager
                     {
                         foreach (var game in Games.GetSupportedGames())
                         {
-                            string fullPath = Path.Combine(path, game.ExecutableName);
+                            string fullPath = string.Empty;
+                            bool existsGameExe = File.Exists(Path.Combine(path, Path.GetFileName(game.GamePath)));
+                            bool existsGameExeEGS = File.Exists(Path.Combine(path, Path.GetFileName(game.GamePathEGS)));
+
+                            if (existsGameExe)
+                            {
+                                fullPath = Path.Combine(path, Path.GetFileName(game.GamePath));
+                            }
+                            if (existsGameExeEGS)
+                            {
+                                fullPath = Path.Combine(path, Path.GetFileName(game.GamePathEGS));
+                            }
+
                             if (File.Exists(fullPath))
                             {
                                 games.Add(new GameInstall(game, Path.GetDirectoryName(fullPath), GameLauncher.None));

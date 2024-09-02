@@ -462,7 +462,19 @@ namespace HedgeModManager
             var exeDir = HedgeApp.StartDirectory;
             var modloader = HedgeApp.CurrentGame.ModLoader;
             bool hasOtherModLoader = modloader != null && File.Exists(Path.Combine(exeDir, modloader.ModLoaderFileName));
-            IsCPKREDIRInstalled = HedgeApp.CurrentGame.SupportsCPKREDIR ? HedgeApp.IsCPKREDIRInstalled(Path.Combine(exeDir, HedgeApp.CurrentGame.ExecutableName)) : hasOtherModLoader;
+
+            string exePath = string.Empty;
+            bool existsGameExe = File.Exists(Path.Combine(exeDir, Path.GetFileName(HedgeApp.CurrentGame.GamePath)));
+            bool existsGameExeEGS = File.Exists(Path.Combine(exeDir, Path.GetFileName(HedgeApp.CurrentGame.GamePathEGS)));
+            if (existsGameExe)
+            {
+                exePath = Path.Combine(exeDir, Path.GetFileName(HedgeApp.CurrentGame.GamePath));
+            }
+            if (existsGameExeEGS)
+            {
+                exePath = Path.Combine(exeDir, Path.GetFileName(HedgeApp.CurrentGame.GamePathEGS));
+            }
+            IsCPKREDIRInstalled = HedgeApp.CurrentGame.SupportsCPKREDIR ? HedgeApp.IsCPKREDIRInstalled(exePath) : hasOtherModLoader;
 
             ComboBox_GameStatus.SelectedValue = HedgeApp.CurrentGameInstall;
             Button_OtherLoader.Content = Localise(hasOtherModLoader ? "SettingsUIUninstallLoader" : "SettingsUIInstallLoader");
@@ -1510,7 +1522,19 @@ namespace HedgeModManager
                     if (HedgeApp.CurrentGame.SupportsCPKREDIR)
                     {
                         // Remove old patch
-                        string exePath = Path.Combine(HedgeApp.StartDirectory, HedgeApp.CurrentGame.ExecutableName);
+                        string exePath = string.Empty;
+                        bool existsGameExe = File.Exists(Path.Combine(HedgeApp.StartDirectory, Path.GetFileName(HedgeApp.CurrentGame.GamePath)));
+                        bool existsGameExeEGS = File.Exists(Path.Combine(HedgeApp.StartDirectory, Path.GetFileName(HedgeApp.CurrentGame.GamePathEGS)));
+
+                        if (existsGameExe)
+                        {
+                            exePath = Path.Combine(HedgeApp.StartDirectory, Path.GetFileName(HedgeApp.CurrentGame.GamePath));
+                        }
+                        if (existsGameExeEGS)
+                        {
+                            exePath = Path.Combine(HedgeApp.StartDirectory, Path.GetFileName(HedgeApp.CurrentGame.GamePathEGS));
+                        }
+
                         if (HedgeApp.IsCPKREDIRInstalled(exePath))
                             HedgeApp.InstallCPKREDIR(exePath, false);
 
